@@ -1,118 +1,118 @@
-# Unbanall
+﻿<div align="center">
+  <h1>🛡️ Unbanall</h1>
+  <p><b>Enterprise-Grade Discord Moderation & Orchestration Platform</b></p>
+  <p><i>Crafted with ❤️ by <b>ItzzIkram</b> | A <b>DemonZ</b> Project</i></p>
+</div>
 
-Unbanall is an enterprise-focused Rust platform for Discord moderation orchestration at scale.
+---
 
-It combines a service-oriented control plane, Kafka-backed task delivery, Redis coordination, Postgres durability, and Twilight-based Discord execution for high-volume moderation workloads such as bulk unban, ban, kick, role changes, and message cleanup.
+## 📖 Overview
 
-## Ownership
+**Unbanall** is a high-performance, distributed task platform engineered for massive-scale Discord server moderation. Written entirely in **Rust**, it is designed to safely execute high-volume workflows—such as bulk unbans, mass kicks, role management, and message cleanup—without hitting rate limits or dropping tasks.
 
-- Author: ItzzIkram
-- Brand: DemonZ
+By leveraging a robust stack of **Kafka**, **Redis**, **PostgreSQL**, and **Twilight**, Unbanall provides guarantees around durability, idempotency, and distributed rate-limit coordination.
 
-## Highlights
+---
 
-- Distributed architecture with clear control, data, and operations planes.
-- Durable command and task lifecycle persisted in Postgres.
-- Redis-backed route and global rate-limit coordination.
-- Kafka event backbone for commands, tasks, results, and audits.
-- JWT + RBAC authorization and approval workflows for sensitive actions.
-- Multi-region execution lease model to keep per-guild single-writer behavior.
+## ✨ Highlights & Features
 
-## Architecture
+- 🏗️ **Distributed Microservices**: Clean separation of control, data, and operations planes.
+- 💾 **Durable & Resilient**: Command and task lifecycles are persisted in PostgreSQL. No lost tasks.
+- 🚦 **Global Rate Limiting**: Redis-backed coordination ensures Discord API limits are respected system-wide.
+- 📨 **Event-Driven Backbone**: Kafka handles commands, tasks, task results, and audit logging.
+- 🔐 **Zero-Trust Security**: JWT authentication + RBAC authorization for sensitive operations.
+- 🌍 **Multi-Region Execution**: Lease models guarantee per-guild single-writer behavior across regions.
+- ✅ **Approval Workflows**: Built-in human-in-the-loop approvals for highly destructive actions (like unban_all).
 
-- Control plane:
-  - api-gateway
-  - task-controller
-  - audit-service
-- Data plane:
-  - queue-service
-  - worker
-  - shard-manager
-  - rate-limit-service
-  - cache-service
-- Ops plane:
-  - metrics-service
-  - telemetry shared library
-  - Kubernetes manifests and autoscaling definitions
+---
 
-Additional architecture detail is documented in docs/architecture.md.
+## 🏛️ Architecture
 
-## Repository Structure
+Unbanall is divided into three distinct operational planes:
 
-```text
-services/
-  api-gateway/
-  audit-service/
-  cache-service/
-  metrics-service/
-  queue-service/
-  rate-limit-service/
-  shard-manager/
-  task-controller/
-  worker/
-libs/
-  auth/
-  discord-client/
-  kafka-runtime/
-  platform-store/
-  rate-limit/
-  task-model/
-  telemetry/
-infra/
-  postgres/
-  kubernetes/
-docs/
-config.json
-```
+### 1. Control Plane
+Handles ingress, validation, and metadata.
+- **pi-gateway**: Ingress API for commands and approvals.
+- **	ask-controller**: Task planning and scheduling.
+- **udit-service**: Immutable audit log intake.
 
-## Technology Stack
+### 2. Data Plane
+Handles execution, queueing, and Discord interactions.
+- **queue-service**: Manages Kafka publishing and replay logic.
+- **worker**: Fetches tasks, manages rate limits, and executes Discord actions using the Twilight HTTP/Gateway clients.
+- **shard-manager**: Dynamic shard provisioning based on Discord recommendations.
+- **ate-limit-service** & **cache-service**: Centralized state management.
 
-- Language: Rust (workspace monorepo)
-- HTTP/API: Axum
-- Messaging: Kafka (rdkafka)
-- Cache/coordination: Redis
-- Durable state: Postgres (sqlx)
-- Discord integration: Twilight HTTP + Gateway
-- Observability: Prometheus + tracing
-- Deployment assets: Kubernetes + KEDA manifests
+### 3. Ops Plane
+Handles observability and autoscaling.
+- **metrics-service**: Exposes Prometheus metrics.
+- **	elemetry** library: Unified 	racing logs.
+- **Kubernetes / KEDA**: Deployment manifests and event-driven autoscaling logic.
 
-## Runtime Configuration
+*For a deeper dive, check out [docs/architecture.md](docs/architecture.md).*
 
-Core environment variables:
+---
 
-- DISCORD_TOKEN: bot token used by worker and shard-manager for live Discord calls.
-- JWT_SECRET: HMAC secret used by api-gateway to validate bearer tokens.
-- KAFKA_BROKERS: Kafka bootstrap servers.
-- KAFKA_CONSUMER_GROUP: consumer group for worker instances.
-- REDIS_URL: Redis connection string for distributed coordination.
-- DATABASE_URL: Postgres connection string for commands, tasks, approvals, audits, and analytics.
-- REGION: region identifier used for execution lease ownership.
+## 📂 Repository Structure
 
-Default development values are available in infra/kubernetes/configmap.yaml and sample request payloads are in config.json.
+`	ext
+unbanall/
+├── services/       # Microservices (api-gateway, worker, queue-service, etc.)
+├── libs/           # Shared crates (auth, discord-client, platform-store, etc.)
+├── infra/          # Postgres migrations and Kubernetes/KEDA manifests
+├── docs/           # Architecture and data contract documentation
+├── config.json     # Sample request payloads and local config
+└── Cargo.toml      # Root Rust workspace configuration
+`
 
-## Quick Start
+---
 
-1. Start dependencies (Kafka, Redis, Postgres) using your preferred local setup.
-2. Export required environment variables.
-3. Build the workspace:
+## 🚀 Getting Started
 
-```powershell
+### Prerequisites
+
+- Rust (Edition 2021)
+- PostgreSQL
+- Redis
+- Kafka (e.g., Redpanda or local cluster)
+
+### 1. Environment Configuration
+
+Set the following environment variables (or rely on local defaults). See infra/kubernetes/configmap.yaml for reference.
+
+`env
+DISCORD_TOKEN="YOUR_DISCORD_BOT_TOKEN"
+JWT_SECRET="development-secret"
+KAFKA_BROKERS="localhost:9092"
+KAFKA_CONSUMER_GROUP="worker-group"
+REDIS_URL="redis://localhost:6379"
+DATABASE_URL="postgres://platform:platform@localhost:5432/platform"
+REGION="us-east-1"
+`
+
+### 2. Build the Workspace
+
+`ash
 cargo check
-```
+`
 
-4. Run services (example):
+### 3. Run Core Services
 
-```powershell
+Launch the minimum required services in separate terminal instances:
+
+`ash
 cargo run -p api-gateway
 cargo run -p queue-service
 cargo run -p worker
-```
+`
 
-5. Submit commands to api-gateway at /v1/commands.
+---
 
-## Unban Command Example
+## 💻 Usage Example: Bulk Unban
 
-```json
+Submit a command to the pi-gateway (POST /v1/commands). Ensure you pass your Operator JWT in the Authorization: Bearer <token> header.
+
+`json
 {
   "tenant_id": "tenant-1",
   "guild_id": "123456789012345678",
@@ -121,52 +121,48 @@ cargo run -p worker
   "idempotency_key": "unban-req-001",
   "dry_run": false,
   "payload": {
-    "targets": [
-      "987654321098765432"
-    ],
+    "targets": ["987654321098765432"],
     "task_context": {}
   }
 }
-```
+`
+*Note: 	argets expects an array of stringified Discord Snowflakes. 	ask_context is used for conditional parameters like channel_id or ole_id.*
 
-Notes:
+---
 
-- payload.targets is currently planned as string IDs.
-- task_context supports JSON values and now accepts both string and numeric snowflake IDs for fields like channel_id and role_id where relevant.
+## 🧪 Testing
 
-## Testing
+Unbanall includes comprehensive testing for correct task planning, authorization extraction, and Discord execution mapping.
 
-Run full workspace tests:
-
-```powershell
+`ash
+# Run the full workspace test suite
 cargo test
-```
 
-Run unban-focused tests:
-
-```powershell
+# Run specific module tests (e.g., Discord client unban mapping)
 cargo test -p discord-client unban
-```
+`
 
-## Security and Operations Guidance
+---
 
-- Never commit production secrets to source control.
-- Rotate JWT and bot credentials regularly.
-- Apply least-privilege RBAC for operators and service identities.
-- Use approval workflows for destructive high-cardinality operations.
-- Track route-level retry and rate-limit observations for tuning and capacity planning.
+## 🛡️ Security & Operations
 
-## Contributing
+- **Secret Management**: Never commit DISCORD_TOKEN or JWT_SECRET. 
+- **RBAC**: Apply least-privilege principles to JWT payloads to tightly scope operator access.
+- **Human In The Loop**: Use approval workflows for destructive high-cardinality operations.
+- **Analytics**: Track route-level retry and rate-limit observations for tuning and capacity planning.
 
-Contributions are welcome through issues and pull requests.
+---
 
-Recommended workflow:
+## 🤝 Contributing
 
-1. Create a feature branch.
-2. Keep changes scoped and well-tested.
-3. Run cargo fmt, cargo check, and cargo test before opening a PR.
-4. Include migration notes when schema changes are introduced.
+Contributions are always welcome! 
 
-## License
+1. Create a feature branch (git checkout -b feature/amazing-feature).
+2. Ensure code formatting and tests pass (cargo fmt && cargo test).
+3. Open a Pull Request.
 
-This project is licensed under the MIT License. See LICENSE for details.
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**. Copyright (c) 2026 **ItzzIkram (DemonZ)**. See the [LICENSE](LICENSE) file for details.
