@@ -1,0 +1,186 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: task-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: task-platform/api-gateway:latest
+          ports:
+            - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-controller
+  namespace: task-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: task-controller
+  template:
+    metadata:
+      labels:
+        app: task-controller
+    spec:
+      containers:
+        - name: task-controller
+          image: task-platform/task-controller:latest
+          ports:
+            - containerPort: 8081
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: queue-service
+  namespace: task-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: queue-service
+  template:
+    metadata:
+      labels:
+        app: queue-service
+    spec:
+      containers:
+        - name: queue-service
+          image: task-platform/queue-service:latest
+          ports:
+            - containerPort: 8085
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cache-service
+  namespace: task-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cache-service
+  template:
+    metadata:
+      labels:
+        app: cache-service
+    spec:
+      containers:
+        - name: cache-service
+          image: task-platform/cache-service:latest
+          ports:
+            - containerPort: 8086
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-service
+  namespace: task-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: metrics-service
+  template:
+    metadata:
+      labels:
+        app: metrics-service
+    spec:
+      containers:
+        - name: metrics-service
+          image: task-platform/metrics-service:latest
+          ports:
+            - containerPort: 8087
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: task-platform
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: task-platform/worker:latest
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shard-manager
+  namespace: task-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: shard-manager
+  template:
+    metadata:
+      labels:
+        app: shard-manager
+    spec:
+      containers:
+        - name: shard-manager
+          image: task-platform/shard-manager:latest
+          ports:
+            - containerPort: 8082
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rate-limit-service
+  namespace: task-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rate-limit-service
+  template:
+    metadata:
+      labels:
+        app: rate-limit-service
+    spec:
+      containers:
+        - name: rate-limit-service
+          image: task-platform/rate-limit-service:latest
+          ports:
+            - containerPort: 8083
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audit-service
+  namespace: task-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: audit-service
+  template:
+    metadata:
+      labels:
+        app: audit-service
+    spec:
+      containers:
+        - name: audit-service
+          image: task-platform/audit-service:latest
+          ports:
+            - containerPort: 8084

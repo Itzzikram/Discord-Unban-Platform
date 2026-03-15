@@ -1,0 +1,57 @@
+{
+  "runtime": {
+    "api_base_url": "http://localhost:8080",
+    "region": "us",
+    "discord_shard_count": 16
+  },
+  "env": {
+    "DISCORD_TOKEN": "YOUR_DISCORD_BOT_TOKEN",
+    "JWT_SECRET": "development-secret",
+    "KAFKA_BROKERS": "localhost:9092",
+    "KAFKA_CONSUMER_GROUP": "worker-group",
+    "REDIS_URL": "redis://localhost:6379",
+    "DATABASE_URL": "postgres://platform:platform@localhost:5432/platform"
+  },
+  "auth": {
+    "bearer_token": "PASTE_OPERATOR_JWT_HERE"
+  },
+  "requests": {
+    "unban_string_ids": {
+      "tenant_id": "tenant-1",
+      "guild_id": "123456789012345678",
+      "action": "unban",
+      "requested_by": "admin-user",
+      "idempotency_key": "unban-req-001",
+      "dry_run": false,
+      "payload": {
+        "targets": [
+          "987654321098765432"
+        ],
+        "task_context": {}
+      }
+    },
+    "unban_numeric_target_note": {
+      "note": "targets are currently parsed as strings by task planner; use string values for payload.targets",
+      "supported_numeric_fields_in_task_context": [
+        "channel_id",
+        "role_id"
+      ]
+    },
+    "delete_message_numeric_channel_id": {
+      "tenant_id": "tenant-1",
+      "guild_id": "123456789012345678",
+      "action": "delete_message",
+      "requested_by": "admin-user",
+      "idempotency_key": "delete-msg-req-001",
+      "dry_run": false,
+      "payload": {
+        "targets": [
+          "111111111111111111"
+        ],
+        "task_context": {
+          "channel_id": 555555555555555555
+        }
+      }
+    }
+  }
+}

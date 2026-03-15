@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: platform-config
+  namespace: task-platform
+data:
+  RUST_LOG: info
+  KAFKA_BROKERS: kafka:9092
+  KAFKA_CONSUMER_GROUP: worker-group
+  KAFKA_LAG_SCALE_UP_THRESHOLD: "1000"
+  KAFKA_LAG_SCALE_OUT_THRESHOLD: "10000"
+  REDIS_URL: redis://redis:6379
+  DATABASE_URL: postgres://platform:platform@postgres:5432/platform
+  DISCORD_SHARD_COUNT: "16"
+  REGION: us
+  JWT_SECRET: development-secret

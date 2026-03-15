@@ -1,0 +1,19 @@
+[package]
+name = "queue-service"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+axum.workspace = true
+kafka-runtime = { path = "../../libs/kafka-runtime" }
+platform-store = { path = "../../libs/platform-store" }
+rdkafka.workspace = true
+serde_json.workspace = true
+task-model = { path = "../../libs/task-model" }
+telemetry = { path = "../../libs/telemetry" }
+tokio.workspace = true
+tower-http.workspace = true
+tracing.workspace = true
+uuid.workspace = true

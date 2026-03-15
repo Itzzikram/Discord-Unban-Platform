@@ -1,0 +1,15 @@
+[package]
+name = "discord-client"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+chrono.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+task-model = { path = "../task-model" }
+twilight-http.workspace = true
+twilight-model.workspace = true
+uuid.workspace = true

@@ -1,0 +1,12 @@
+[package]
+name = "rate-limit"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+chrono.workspace = true
+redis.workspace = true
+serde.workspace = true
+serde_json.workspace = true
